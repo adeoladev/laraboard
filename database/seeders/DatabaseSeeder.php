@@ -4,6 +4,10 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Threads;
+use App\Models\Board;
+use App\Models\Category;
+use App\Models\Replies;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,11 +18,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        Category::factory(4)->create();
+        Board::factory(10)->create();
+        Threads::factory(40)->create();
+        Replies::factory(40)->create();
     }
 }

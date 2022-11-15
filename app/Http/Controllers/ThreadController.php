@@ -1,15 +1,17 @@
 <?php
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Threads;
-use App\Replies;
+use App\Models\Threads;
+use App\Models\Replies;
+use App\Models\Board;
 
 class ThreadController extends Controller
 {
-    public function index($id) {
-        $onemsg = Replies::where('thread_id', $id)->where('reply_id', $id)->get();
-        $onereply = Replies::orderBy('created_at','ASC')->where('thread_id',$id)->where('reply_id','!=',$id)->get();
-        return view('thread', compact('onemsg'), compact('onereply'));
+    public function index($board,$id) {
+        $mainmsg = Replies::where('thread_id', $id)->where('reply_id', $id)->first();
+        $replies = Replies::orderBy('created_at','ASC')->where('thread_id',$id)->where('reply_id','!=',$id)->get();
+        $thisBoard = Board::where('tag', $board)->first();
+        return view('thread', compact('mainmsg'), compact('replies'))->with(['tag'=>$thisBoard->tag,'name'=>$thisBoard->name]);
     }
 
     public function newReply(Request $request, $id) 
@@ -19,8 +21,8 @@ class ThreadController extends Controller
     
         if (isset($_FILES['upload']) && $_FILES['upload']['size'] > 0) {   
         $filename = $_FILES['upload']['name'];
-        $target_dir = "../images/";
-        $path = $target_dir . $filename;
+        $target_dir = "images/";
+        $path = $target_dir . str_replace(' ', '_', $filename);
         move_uploaded_file($_FILES['upload']['tmp_name'],$path);
         }
 
@@ -42,7 +44,7 @@ class ThreadController extends Controller
         $ting = Replies::where('reply_id',$array[$x])->first('reply_from');
         if (empty($ting)) {
         $array2 = [];
-        } else if ($ting == null) {
+        } else if (!$ting) {
         Replies::where('reply_id',$array[$x])->update(['reply_from' => ">>".$bestid]); 
         $array2[] = $array[$x];
         } else {
@@ -62,7 +64,6 @@ class ThreadController extends Controller
         $finalMessage = implode("\n", $filteredPieces);
         }
 
-        $date = date("F j, Y h:i a");
         $image = $path;
 
         Replies::create([
@@ -72,10 +73,12 @@ class ThreadController extends Controller
             'name' => $request->name ?? 'Anonymous',
             'message' => $finalMessage,
             'image' => $image,
-            'date' => $date
         ]); 
 
         Threads::where('thread_id', $id)->increment('replies');
+        if ($image) {
+        Threads::where('thread_id', $id)->increment('images');   
+        }
     
         return redirect()->back();
     }

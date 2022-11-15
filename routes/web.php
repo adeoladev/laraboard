@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ThreadController;
-use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +16,7 @@ use App\Http\Controllers\HomeController;
 */
 
 Route::get('/', [BoardController::class, 'index'])->name('home');
-Route::post('/newthread', [BoardController::class, 'newThread'])->name('newthread');
+Route::get('/{board}/thread/{id}', [ThreadController::class, 'index'])->name('thread');
+Route::get('/{board}', [BoardController::class, 'board'])->name('board');
+Route::post('/newthread/{tag}', [BoardController::class, 'newThread'])->name('newthread');
 Route::post('/newreply/{id}', [ThreadController::class, 'newReply'])->name('newreply');
-Route::get('/thread/{id}', [ThreadController::class, 'index'])->name('thread');
-Auth::routes();
-
-Route::get('/home', [HomeController::class, 'index'])->name('home');
