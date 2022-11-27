@@ -21,8 +21,7 @@ class BoardFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'tag' => $this->faker->randomLetter(),
-            'category' => $this->faker->numberBetween($min = 1, $max = 4),
-            'content' => 'sfw'
+            'category' => $this->faker->numberBetween($min = 1, $max = 4)
         ];
     }
 }

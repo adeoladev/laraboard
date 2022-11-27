@@ -29,14 +29,14 @@ class ThreadsFactory extends Factory
             'name' => 'Anonymous',
             'message' => $message,
             'thumbnail' => 'https://i.imgur.com/turFgMZ.jpg',
-            'image' => 'https://i.imgur.com/turFgMZ.jpg'
+            'file' => 'https://i.imgur.com/turFgMZ.jpg'
         ]);
         return [
             'thread_id' => $id,
             'name' => 'Anonymous',
             'message' => $message,
-            'image' => 'https://i.imgur.com/turFgMZ.jpg',
             'thumbnail' => 'https://i.imgur.com/turFgMZ.jpg',
+            'file' => 'https://i.imgur.com/turFgMZ.jpg',
             'board' => Board::inRandomOrder()->first()->tag
         ];
     }

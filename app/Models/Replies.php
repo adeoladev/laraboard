@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Replies extends Model 
 {
     use HasFactory;
+    protected $primaryKey = 'reply_id';
     protected $guarded = [];
-
 }

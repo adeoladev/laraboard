@@ -16,8 +16,8 @@ class CreateRepliesTable extends Migration
         Schema::create('replies', function (Blueprint $table) {
             $table->id('r_id');
             $table->string('reply_id');
-            $table->string('reply_to')->nullable();
-            $table->string('reply_from')->nullable();
+            $table->json('reply_to')->nullable();
+            $table->json('reply_from')->nullable();
             $table->string('thread_id');
             $table->string('name');
             $table->string('message', 500);

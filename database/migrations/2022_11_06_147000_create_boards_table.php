@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('tag');
             $table->foreignId('category')->constrained('categories');
-            $table->string('content')->nullable();
             $table->timestamps();
         });
     }

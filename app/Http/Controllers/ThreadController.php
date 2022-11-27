@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+use FFMpeg;
 use Illuminate\Http\Request;
 use App\Models\Threads;
 use App\Models\Replies;
@@ -11,72 +12,65 @@ class ThreadController extends Controller
         $mainmsg = Replies::where('thread_id', $id)->where('reply_id', $id)->first();
         $replies = Replies::orderBy('created_at','ASC')->where('thread_id',$id)->where('reply_id','!=',$id)->get();
         $thisBoard = Board::where('tag', $board)->first();
+        if ($mainmsg == null || $thisBoard == null) {
+        abort(404);
+        }
         return view('thread', compact('mainmsg'), compact('replies'))->with(['tag'=>$thisBoard->tag,'name'=>$thisBoard->name]);
     }
 
     public function newReply(Request $request, $id) 
     {
-        $path = null;
-        $replyto = null;
     
-        if (isset($_FILES['upload']) && $_FILES['upload']['size'] > 0) {   
-        $filename = $_FILES['upload']['name'];
-        $target_dir = "images/";
-        $path = $target_dir . str_replace(' ', '_', $filename);
-        move_uploaded_file($_FILES['upload']['tmp_name'],$path);
+        if (isset($_FILES['upload']) && $_FILES['upload']['size'] > 0) { 
+        $file = $request->file('upload');
+        $info = pathinfo($file->getClientOriginalName());
+        $filename = str_replace(str_split("\\/*{}[].' "), '_', $info['filename']);
+        $extension = $info['extension'];
+        $filepath = "files/$filename.$extension";
+        $thumbnail = "files/thumbnails/$filename.jpg";
+        $file->move('files/',$filename.'.'.$extension);
         }
 
         $finalMessage = $request->message;
         $bestid = substr(str_shuffle("0123456789"), 0, 10);
 
         if (substr_count($request->message,'>>') > 0) {
-        $x = 0;
 
         $pieces = explode("\n", $request->message);
 
         foreach($pieces as $piece) {
           if(substr_count($piece,'>>')) {
-          $array[] = trim(str_replace('>>', '', $piece)); 
+          $array1[] = trim(str_replace('>>', '', $piece)); 
           }
         }
 
-        while($x<count($array)) {
-        $ting = Replies::where('reply_id',$array[$x])->first('reply_from');
-        if (empty($ting)) {
-        $array2 = [];
-        } else if (!$ting) {
-        Replies::where('reply_id',$array[$x])->update(['reply_from' => ">>".$bestid]); 
-        $array2[] = $array[$x];
-        } else {
-        Replies::where('reply_id',$array[$x])->update(['reply_from' => $ting->reply_from.'|'.">>".$bestid]);  
-        $array2[] = $array[$x];
-        }
-        $x++;
-        }
+        $replyto = json_encode($array1);
 
-        if (count($array2)>0) {
-        $replyto = ">>".implode("|>>", $array2);
-        } else {
-        $replyto = null;
+        foreach($array1 as $reply) {
+        $query = Replies::where('reply_id',$reply)->first();
+        if ($query) {
+        $array[] = $bestid;
+        $query->reply_from = json_encode($array);
+        $query->save();
+        }
         }
 
         $filteredPieces = array_filter($pieces, function($piece) {return !substr_count($piece, '>>');});
         $finalMessage = implode("\n", $filteredPieces);
         }
 
-        $image = $path;
-
         Replies::create([
             'reply_id' => $bestid,
-            'reply_to' => $replyto,
+            'reply_to' => $replyto ?? null,
             'thread_id' => $id,
             'name' => $request->name ?? 'Anonymous',
             'message' => $finalMessage,
-            'image' => $image,
+            'thumbnail' => $thumbnail ?? null,
+            'file' => $filepath ?? null,
         ]); 
 
         Threads::where('thread_id', $id)->increment('replies');
-        if ($image) {
+        if ($filepath) {
         Threads::where('thread_id', $id)->increment('images');   
         }
     
