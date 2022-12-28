@@ -26,6 +26,7 @@ body {
 }
 .name {
     font-weight:bold;
+    font-family:arial;
     color: #E8392C;
 }
 textarea {
@@ -35,12 +36,15 @@ textarea {
     max-width:400px;
     min-width:338.5px;
 }
-#postButton {
+.postButton {
     font-size: 12px;
     color: white;
     background-color: #E8392C;
     border: 1px solid #E8392C;
     margin-right:20px;
+}
+.postButton:hover {
+    cursor:pointer;
 }
 .threadHead a {
     float:right;
@@ -58,6 +62,13 @@ textarea {
 
 
 /*----------CONTAINERS-----------*/
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    border-bottom: 1px solid #D2D8DD;
+    font-size: 12px;
+}
 .popularThread {
     margin-top:10px;
     margin-bottom:10px;
@@ -83,6 +94,21 @@ textarea {
     display:flex;
     justify-content: center;
 }
+.boards-width {
+    width:80%;
+}
+.boards-thread-width {
+    width:160px;
+}
+.reply-width {
+    width:unset;
+}
+.justify-content{
+    justify-content:center;
+}
+.threads-width {
+    width:80%;
+}
 .flexwrap {
     display:flex;
     flex-wrap:wrap;
@@ -97,11 +123,18 @@ textarea {
     border-bottom: 1px solid #D2D8DD;
     font-size:12px;
 }
+.width-80 {
+    width:80%;
+}
 
 /*--------------------------*/
 
 
 /*----------OBJECTS----------*/
+.icons {
+    width:15px;
+    padding:2px;
+}
 #header {
     box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 20%), 0 1px 5px 0 rgb(0 0 0 / 12%);
     justify-content: space-between;
@@ -113,7 +146,7 @@ textarea {
     background-color:#E7EAED;
     padding:10px;
 }
-.homeimg {
+.threadimg {
     border-radius:4px;
     width: 100%;
     height: 170px;
@@ -133,4 +166,79 @@ textarea {
     padding: 10px;
     background-color: #D2D8DD;
     box-shadow:0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
+}
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    font-size:13px;
+}
+    
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+td {
+    max-width:500px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+tr:nth-child(even) {
+background-color: #dddddd;
+}
+
+@media (max-width: 780px) {
+    table {
+        font-size:10px;
+    }
+.form {
+    right:1px;
+}
+.postcontainer {
+    padding:5px;
+}
+.flexbox-threads {
+    justify-content:center;
+}
+.popularThread {
+    width: 40%;
+    margin: 4px;
+    margin-bottom: 15px;
+}
+ol {
+    width: unset;
+    padding: 0;
+    margin: 0;
+}
+.flex-wrap {
+    justify-content: space-around;
+}
+.width-80 {
+    width:100%;
+}
+.justify-content {
+    justify-content:space-around;
+}
+.replyimg {
+    max-width:30%;
+}
+.reply-width {
+    width:100%;
+}
+.boards-thread-width {
+    width:145px;
+}
+.threads-width {
+    width:100%;
+}
+.board-width {
+    width:unset;
+}
+.boards-width {
+    width:unset;
+}
 }

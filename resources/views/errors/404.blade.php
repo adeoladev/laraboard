@@ -4,14 +4,13 @@
 
 <br>
 
-<div id='mainarea'>
-<div id='mainarea2'>
+<div class='flexcenter'>
+<div class='flexbox'>
 
 <div id='msgs'>     
-<h1>404 NOT FOUND</h1>
-
-
+<h1 class='name'>404 NOT FOUND</h1>
 </div>
+
 </div>
 </div>
 

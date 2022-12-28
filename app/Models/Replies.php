@@ -10,4 +10,8 @@ class Replies extends Model
     use HasFactory;
     protected $primaryKey = 'reply_id';
     protected $guarded = [];
+
+    public function Thread() {
+        return $this->belongsTo('App\Models\Threads','reply_id');
+    }
 }

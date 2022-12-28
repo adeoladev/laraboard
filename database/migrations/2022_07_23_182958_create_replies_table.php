@@ -14,15 +14,17 @@ class CreateRepliesTable extends Migration
     public function up()
     {
         Schema::create('replies', function (Blueprint $table) {
-            $table->id('r_id');
+            $table->id();
             $table->string('reply_id');
             $table->json('reply_to')->nullable();
             $table->json('reply_from')->nullable();
             $table->string('thread_id');
-            $table->string('name');
+            $table->string('name')->default('Anonymous');
             $table->string('message', 500);
             $table->string('thumbnail')->nullable();
-            $table->string('image')->nullable();
+            $table->string('file')->nullable();
+            $table->string('ip_address');
+            $table->string('board');
             $table->timestamps();
         });
     }

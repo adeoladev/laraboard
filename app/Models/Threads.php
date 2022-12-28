@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Threads extends Model 
 {
     use HasFactory;
-    protected $guarded = [];
     protected $primaryKey = 'thread_id';
+    protected $guarded = [];
 
     public function board_name()
     {

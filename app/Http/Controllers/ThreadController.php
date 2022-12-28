@@ -18,21 +18,28 @@ class ThreadController extends Controller
         return view('thread', compact('mainmsg'), compact('replies'))->with(['tag'=>$thisBoard->tag,'name'=>$thisBoard->name]);
     }
 
-    public function newReply(Request $request, $id) 
-    {
+    public function newReply(Request $request, $id) {
+
+        $request->validate([
+            'name' => 'max:48',
+            'message' => 'required',
+            'upload' => 'mimes:jpg,jpeg,png,gif,mp4,webm'
+        ]);
     
+        $board = $request->board;
+        $finalMessage = $request->message;
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $bestid = substr(str_shuffle("0123456789"), 0, 10);
+
         if (isset($_FILES['upload']) && $_FILES['upload']['size'] > 0) { 
         $file = $request->file('upload');
         $info = pathinfo($file->getClientOriginalName());
-        $filename = str_replace(str_split("\\/*{}[].' "), '_', $info['filename']);
         $extension = $info['extension'];
-        $filepath = "files/$filename.$extension";
-        $thumbnail = "files/thumbnails/$filename.jpg";
-        $file->move('files/',$filename.'.'.$extension);
+        $filepath = "files/$bestid.$extension";
+        $thumbnail = "files/thumbnails/$bestid.jpg";
+        $file->move('files/',$bestid.'.'.$extension);
+        Threads::where('thread_id', $id)->increment('files'); 
         }
-
-        $finalMessage = $request->message;
-        $bestid = substr(str_shuffle("0123456789"), 0, 10);
 
         if (substr_count($request->message,'>>') > 0) {
 
@@ -59,6 +66,18 @@ class ThreadController extends Controller
         $finalMessage = implode("\n", $filteredPieces);
         }
 
+        Threads::where('thread_id', $id)->increment('replies');
+
+        if (isset($file)) {
+        FFMpeg::open($filepath)->addFilter('-vf','scale=iw*.5:ih*.5')->export()->save($thumbnail);  
+        } else if (isset($request->linkupload) && filter_var($request->linkupload, FILTER_VALIDATE_URL)) {
+        FFMpeg::openUrl($request->linkupload)->export()->save("files/$bestid.jpg");
+        FFMpeg::open("files/$bestid.jpg")->addFilter('-vf','scale=iw*.5:ih*.5')->export()->save("files/thumbnails/$bestid.jpg"); 
+        $filepath = "files/$bestid.jpg";
+        $thumbnail = "files/thumbnails/$bestid.jpg";
+        Threads::where('thread_id', $id)->increment('files');
+        }
+
         Replies::create([
             'reply_id' => $bestid,
             'reply_to' => $replyto ?? null,
@@ -67,12 +86,9 @@ class ThreadController extends Controller
             'message' => $finalMessage,
             'thumbnail' => $thumbnail ?? null,
             'file' => $filepath ?? null,
+            'ip_address' => $ip,
+            'board' => $board
         ]); 
-
-        Threads::where('thread_id', $id)->increment('replies');
-        if ($filepath) {
-        Threads::where('thread_id', $id)->increment('images');   
-        }
     
         return redirect()->back();
     }

@@ -8,6 +8,7 @@ use App\Models\Threads;
 use App\Models\Board;
 use App\Models\Category;
 use App\Models\Replies;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,5 +23,6 @@ class DatabaseSeeder extends Seeder
         Board::factory(10)->create();
         Threads::factory(40)->create();
         Replies::factory(40)->create();
+        //User::factory(1)->create();
     }
 }

@@ -23,21 +23,28 @@ class ThreadsFactory extends Factory
     {
         $id = $this->faker->numberBetween($min = 1000, $max = 9000);
         $message = $this->faker->Paragraph();
+        $ip = $this->faker->ipv4();
+        $board = Board::inRandomOrder()->first()->tag;
         Replies::create([
             'reply_id' => $id,
             'thread_id' => $id,
             'name' => 'Anonymous',
             'message' => $message,
-            'thumbnail' => 'https://i.imgur.com/turFgMZ.jpg',
-            'file' => 'https://i.imgur.com/turFgMZ.jpg'
+            'thumbnail' => 'files/thumbnails/default.jpg',
+            'file' => 'files/default.jpg',
+            'ip_address' => $ip,
+            'board' => $board
         ]);
         return [
             'thread_id' => $id,
             'name' => 'Anonymous',
             'message' => $message,
-            'thumbnail' => 'https://i.imgur.com/turFgMZ.jpg',
-            'file' => 'https://i.imgur.com/turFgMZ.jpg',
-            'board' => Board::inRandomOrder()->first()->tag
+            'thumbnail' => 'files/thumbnails/default.jpg',
+            'file' => 'files/default.jpg',
+            'ip_address' => $ip,
+            'archived' => false,
+            'pinned' => false,
+            'board' => $board
         ];
     }
 }
