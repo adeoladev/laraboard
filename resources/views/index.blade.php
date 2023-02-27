@@ -1,4 +1,4 @@
-@extends('header',['page'=>'index'])
+@extends('header',['page'=>'index','thread'=>null,'tag'=>null])
 <title>{{ config('app.name') }}</title>
 @section('content')
 
@@ -45,9 +45,6 @@
 </div>
 </div>
 
-<div id='app'>
-<example-component></example-component>
-</div>
 
 @endsection
 

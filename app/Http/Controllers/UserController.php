@@ -133,9 +133,9 @@ class UserController extends Controller
         $validPassword = Hash::check($request->password, $existingUser->password ?? null);
 
         if(!$existingUser) {
-           return redirect()->back()->with('status','Invalid Username or Password');
+           return redirect()->back()->with('status','Invalid username or password.');
         } else if ($validPassword == false) {
-           return redirect()->back()->with('status','Invalid Username or Password');
+           return redirect()->back()->with('status','Invalid username or password.');
         } else {
            auth()->attempt(array('username' => $request->username, 'password' => $request->password));
            return redirect()->route('moderation.threads');
@@ -149,13 +149,13 @@ class UserController extends Controller
         $thread->archived = !$thread->archived;
         $thread->updated_at = $thread->updated_at;
         $thread->save();
-        return redirect()->back()->with('status','Updated thread id:'.$thread->thread_id);
+        return redirect()->back()->with('status','Pin status changed');
     }
 
     public function pin(Threads $thread) {
         $thread->pinned = !$thread->pinned;
         $thread->save();
-        return redirect()->back()->with('status','Updated thread id:'.$thread->thread_id);
+        return redirect()->back()->with('status','Pin status changed');
     }
 
     public function renameBoard(Request $request) {
@@ -171,7 +171,7 @@ class UserController extends Controller
         $board->save();
         }
 
-        return redirect()->back()->with('status','Board Renamed');
+        return redirect()->back()->with('status','board renamed.');
     }
 
     public function renameCategory(Request $request) {
@@ -187,7 +187,7 @@ class UserController extends Controller
         $category->save();
         }
 
-        return redirect()->back()->with('status','Category Renamed');
+        return redirect()->back()->with('status','Category renamed.');
     }
 
     public function changePassword(Request $request) {
@@ -195,7 +195,7 @@ class UserController extends Controller
             'password'=> Hash::make($request->password)
         ]);
 
-        return redirect()->back()->with('status','Password Changed');
+        return redirect()->back()->with('status','Password changed.');
     }
 
     public function userInvite(Request $request) {
@@ -227,7 +227,7 @@ class UserController extends Controller
 
         $reply->save();
 
-        return redirect()->back()->with('status','File Updated');
+        return redirect()->back()->with('status','File updated.');
     }
 
     /*---------------DELETE FUNCTIONS-------------------*/
@@ -244,7 +244,7 @@ class UserController extends Controller
 
         Replies::where('thread_id',$thread->thread_id)->delete();
         $thread->delete();
-        return redirect()->back();
+        return redirect()->back()->with('status','Thread deleted.');
     }
 
     public function deleteReply(Replies $reply) {
@@ -255,7 +255,7 @@ class UserController extends Controller
         }
 
         $reply->delete();
-        return redirect()->back();
+        return redirect()->back()->with('status','Reply deleted.');;
     }
 
     public function deleteThreadBan(Threads $thread) {
@@ -266,7 +266,7 @@ class UserController extends Controller
 
         $this->deleteThread($thread);
 
-        return redirect()->back()->with('status','Thread Deleted and IP Banned');
+        return redirect()->back()->with('status','Thread deleted and IP banned.');
     }
 
     public function deleteReplyBan(Replies $reply) {
@@ -277,7 +277,7 @@ class UserController extends Controller
 
         $reply->delete();
 
-        return redirect()->back()->with('status','Thread Deleted and IP Banned');
+        return redirect()->back()->with('status','Thread deleted and IP banned.');
     }
 
 
@@ -291,7 +291,7 @@ class UserController extends Controller
 
         $board->delete();
 
-        return redirect()->back()->with('status','Board Renamed');
+        return redirect()->back()->with('status','Board renamed.');
     }
 
     public function deleteCategory(Category $category) {
@@ -304,13 +304,13 @@ class UserController extends Controller
 
         $category->delete();
 
-        return redirect()->back()->with('status','Category Deleted');
+        return redirect()->back()->with('status','Category deleted.');
     }
 
     public function deleteUser(User $user) {
         $user->delete();
 
-        return redirect()->back()->with('status','User Deleted');
+        return redirect()->back()->with('status','User deleted.');
     }
 
     public function deleteFile(Replies $reply, Threads $thread) {
@@ -328,7 +328,7 @@ class UserController extends Controller
 
         $reply->save();
 
-        return redirect()->back()->with('status','File Deleted');
+        return redirect()->back()->with('status','File deleted.');
     }
 
     /*--------------CREATION FUNCTIONS--------------*/
@@ -344,7 +344,7 @@ class UserController extends Controller
             'category' => $request->category
         ]);
 
-        return redirect()->back()->with('status','Board Added');
+        return redirect()->back()->with('status','Board added.');
     }
 
     public function newCategory(Request $request) {
@@ -358,7 +358,7 @@ class UserController extends Controller
             'content' => $request->content
         ]);
 
-        return redirect()->back()->with('status','Category Added');
+        return redirect()->back()->with('status','Category added.');
     }
 
    

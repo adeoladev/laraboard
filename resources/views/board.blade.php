@@ -1,4 +1,4 @@
-@extends('header',['page'=>'board','tag'=>$thisBoard->tag,'name'=>$thisBoard->name])
+@extends('header',['page'=>'board','tag'=>$thisBoard->tag,'name'=>$thisBoard->name,'thread'=>null])
 <title>/{{$thisBoard->tag}}/ - {{$thisBoard->name}}</title>
 @section('content')
 

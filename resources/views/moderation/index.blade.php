@@ -1,4 +1,4 @@
-@extends('header')
+@extends('header',['page'=>'moderation','thread'=>null,'tag'=>null])
 <title>{{ config('app.name') }} - Moderation</title>
 @section('content')
 
@@ -14,7 +14,6 @@
         <input type='password' name='password' placeholder='password'>
         <button>Login</button>
         </form>
-        @include('inc.status')
         </div>
     </div>
 

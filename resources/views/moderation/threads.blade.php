@@ -1,4 +1,4 @@
-@extends('header')
+@extends('header',['page'=>'moderation','thread'=>null,'tag'=>null])
 <title>{{ config('app.name') }} - Moderation</title>
 @section('content')
 
@@ -9,15 +9,7 @@
 <div class='flexcenter'>
 <div class='width-80'>
 
-        <div class='tabs'>
-        <p class='title'>Threads</p>
-        <a href="{{route('moderation.boards')}}"><p class='date'>Boards</p></a>
-        <a href="{{route('moderation.categories')}}"><p class='date'>Categories</p></a>
-        <a href="{{route('moderation.users')}}"><p class='date'>Users</p></a>
-        <a href="{{route('moderation.files')}}"><p class='date'>Files</p></a>
-        <a href="{{route('moderation.archives')}}"><p class='date'>Archives</p></a>
-        <a href="{{route('moderation.pins')}}"><p class='date'>Pins</p></a>
-        </div>
+        <x-navigation></x-navigation>
         
         <br>
 
@@ -35,7 +27,6 @@
         </form>
         </div>
 
-      @include('inc.status')
         <br>
         
         <table>

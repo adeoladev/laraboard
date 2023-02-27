@@ -37,7 +37,7 @@ public $thread;
         ]);
 
         if (!isset($request->upload) && !isset($request->linkupload)) {
-            return redirect()->back()->with('status','please upload a file.');
+            return redirect()->back()->with('status','Please attach a file to your thread.');
         }
 
         $ip = $_SERVER['REMOTE_ADDR'];
@@ -59,10 +59,10 @@ public $thread;
         }
 
         if ($file && str_contains($request->file('upload')->getMimeType(), 'video')) {
-            $file->move('files/',$filename.'.'.$extension);
+            $file->storeAs('files/',$filename.'.'.$extension);
             FFMpeg::open($filepath)->exportFramesByAmount(1)->addFilter('-vf','scale=iw*.5:ih*.5')->save($thumbnail);
         } else if ($file && str_contains($request->file('upload')->getMimeType(), 'image')) {
-            $file->move('files/',$filename.'.'.$extension);
+            $file->storeAs('files/',$filename.'.'.$extension);
             FFMpeg::open($filepath)->addFilter('-vf','scale=iw*.5:ih*.5')->export()->save($thumbnail);
         }
 
@@ -91,7 +91,7 @@ public $thread;
             'board' => $tag
         ]); 
 
-        return redirect()->back();
+        return redirect()->back()->with('status','Thread posted.');
         
     }
 

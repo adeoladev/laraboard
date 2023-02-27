@@ -15,7 +15,7 @@ class ThreadController extends Controller
         if ($mainmsg == null || $thisBoard == null) {
         abort(404);
         }
-        return view('thread', compact('mainmsg'), compact('replies'))->with(['tag'=>$thisBoard->tag,'name'=>$thisBoard->name]);
+        return view('thread', compact('mainmsg','replies'))->with(['tag'=>$thisBoard->tag,'name'=>$thisBoard->name]);
     }
 
     public function newReply(Request $request, $id) {
@@ -26,7 +26,10 @@ class ThreadController extends Controller
             'upload' => 'mimes:jpg,jpeg,png,gif,mp4,webm'
         ]);
     
-        $board = $request->board;
+        $vars = explode(',',$id);
+        $id = $vars[0];
+        $board = $vars[1];
+        
         $finalMessage = $request->message;
         $ip = $_SERVER['REMOTE_ADDR'];
         $bestid = substr(str_shuffle("0123456789"), 0, 10);
@@ -37,7 +40,7 @@ class ThreadController extends Controller
         $extension = $info['extension'];
         $filepath = "files/$bestid.$extension";
         $thumbnail = "files/thumbnails/$bestid.jpg";
-        $file->move('files/',$bestid.'.'.$extension);
+        $file->storeAs('files/',$bestid.'.'.$extension);
         Threads::where('thread_id', $id)->increment('files'); 
         }
 
@@ -90,7 +93,7 @@ class ThreadController extends Controller
             'board' => $board
         ]); 
     
-        return redirect()->back();
+        return redirect()->back()->with('status','Reply posted.');
     }
 }
 
