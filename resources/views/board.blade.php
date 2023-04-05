@@ -41,7 +41,7 @@
             </div>
         </div>
         <p style="margin-top: 10px;font-size: 13px;">{{$thread->replies}} Replies {{$thread->files}} Files  
-                @if(isset(auth()->user()->username)) <img onclick="window.location='{{route('moderation.files.spoiler',['reply'=>$thread->thread_id,'thread'=>$thread->thread_id] )}}';" class='icons' title='Mark as spoiler' src="{{asset('files/system/spoiler.png')}}"> <img class='icons' title='Pin/Un-Pin' onclick="window.location='{{route('moderation.pin',$thread->thread_id)}}';" src="{{asset('files/system/pushpin.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.archive',$thread->thread_id)}}';" title='Archive/Un-Archive' src="{{asset('files/system/archive.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.thread.delete',$thread->thread_id)}}';" title='Delete' src="{{asset('files/system/delete.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.thread.ban',$thread->thread_id)}}';" title='Delete & Ban IP' src="{{asset('files/system/ban.png')}}">@endif 
+            @if(isset(auth()->user()->username)) <img onclick="window.location='{{route('moderation.files.spoiler',['reply'=>$thread->thread_id,'thread'=>$thread->thread_id] )}}';" class='icons' title='Mark as spoiler' src="{{asset('files/system/spoiler.png')}}"> <img class='icons' title='Pin/Un-Pin' onclick="window.location='{{route('moderation.pin',$thread->thread_id)}}';" src="{{asset('files/system/pushpin.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.archive',$thread->thread_id)}}';" title='Archive/Un-Archive' src="{{asset('files/system/archive.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.thread.delete',$thread->thread_id)}}';" title='Delete' src="{{asset('files/system/delete.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.thread.ban',$thread->thread_id)}}';" title='Delete & Ban IP' src="{{asset('files/system/ban.png')}}">@endif 
         </p>
     </li>
     <br>
@@ -52,4 +52,5 @@
 </div>
 </div>
 
+<x-footer :boards="$boards"></x-footer>
 @endsection

@@ -11,11 +11,12 @@ class ThreadController extends Controller
     public function index($board,$id) {
         $mainmsg = Replies::where('thread_id', $id)->where('reply_id', $id)->first();
         $replies = Replies::orderBy('created_at','ASC')->where('thread_id',$id)->where('reply_id','!=',$id)->get();
+        $boards = Board::all();
         $thisBoard = Board::where('tag', $board)->first();
         if ($mainmsg == null || $thisBoard == null) {
         abort(404);
         }
-        return view('thread', compact('mainmsg','replies'))->with(['tag'=>$thisBoard->tag,'name'=>$thisBoard->name]);
+        return view('thread', compact('mainmsg','replies','boards'))->with(['tag'=>$thisBoard->tag,'name'=>$thisBoard->name]);
     }
 
     public function newReply(Request $request, $id) {
@@ -38,6 +39,7 @@ class ThreadController extends Controller
         $file = $request->file('upload');
         $info = pathinfo($file->getClientOriginalName());
         $extension = $info['extension'];
+        $type = substr($_FILES['upload']['type'], 0, strpos($_FILES['upload']['type'], "/"));
         $filepath = "files/$bestid.$extension";
         $thumbnail = "files/thumbnails/$bestid.jpg";
         $file->storeAs('files/',$bestid.'.'.$extension);
@@ -58,9 +60,14 @@ class ThreadController extends Controller
 
         foreach($array1 as $reply) {
         $query = Replies::where('reply_id',$reply)->first();
-        if ($query) {
-        $array[] = $bestid;
-        $query->reply_from = json_encode($array);
+        if ($query->reply_from) {
+        $jj = json_decode($query->reply_from);
+        array_push($jj, $bestid);
+        $query->reply_from = json_encode($jj);
+        $query->save();
+        } else {
+        $jj = [$bestid];
+        $query->reply_from = json_encode($jj);
         $query->save();
         }
         }
@@ -89,6 +96,7 @@ class ThreadController extends Controller
             'message' => $finalMessage,
             'thumbnail' => $thumbnail ?? null,
             'file' => $filepath ?? null,
+            'file_type' => $type ?? null,
             'ip_address' => $ip,
             'board' => $board
         ]); 

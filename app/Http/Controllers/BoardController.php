@@ -13,18 +13,20 @@ public $thread;
 
     public function index() {
         $categories = Category::all();
+        $boards = Board::all();
         $popularThreads = Threads::orderBy('replies','DESC')->get()->take(6);
-        return view('index', compact('categories','popularThreads'));
+        return view('index', compact('categories','popularThreads','boards'));
     }
 
     public function board($board) {
         $pinnedThreads = Threads::where('pinned',true)->where('board', $board)->get();
         $threads = Threads::orderBy('updated_at', 'DESC')->where('board', $board)->where('pinned',false)->get();
+        $boards = Board::all();
         $thisBoard = Board::where('tag', $board)->first();
         if ($thisBoard == null) {
         abort(404);
         }
-        return view('board', compact('threads','thisBoard','pinnedThreads'));
+        return view('board', compact('threads','thisBoard','pinnedThreads','boards'));
     }
 
     public function newThread(Request $request, $tag) {
@@ -50,6 +52,7 @@ public $thread;
         }
         $filename = $bestid;
         $extension = $info['extension'];
+        $type = substr($_FILES['upload']['type'], 0, strpos($_FILES['upload']['type'], "/"));
         $filepath = "files/$filename.$extension";
         $thumbnail = "files/thumbnails/$filename.jpg";
 
@@ -87,6 +90,7 @@ public $thread;
             'message' => $request->message,
             'thumbnail' => $thumbnail,
             'file' => $filepath,
+            'file_type' => $type,
             'ip_address' => $ip,
             'board' => $tag
         ]); 

@@ -3,13 +3,14 @@
     <div id='header'>
     <a href="/"><p class='name'>{{ app_name }}</p></a>
     <p class='name' v-bind:class="{ hidden: hiddenButton }"><a :href="main_board_path">/{{ tag }}/ - {{ board }}</a></p>
-    <button class='postButton' id='postThread' v-bind:class="{ hidden: hiddenButton }" v-on:click="toggleForm"> {{ buttonType }} </button>
+    <button class='postButton' id='postThread' v-bind:class="{ hidden: hiddenButton }" v-on:click="showForm"> {{ buttonType }} </button>
     <form class='form' :action="form_action" v-bind:class="{ hidden: hiddenForm }" method='post' enctype="multipart/form-data">
     <input type="hidden" name="_token" :value="csrf">
-    <input type='text' name='name' placeholder='name (optional)'>
+    <input type='text' name='name' placeholder='name (optional)'><a id='closeForm' class='replies' title='Close' v-on:click="hideForm">×</a>
     <input type='text' name='title' v-bind:class="{ hidden: hiddenTitle }" placeholder='title (optional)' maxlength="48">
     <br>
-    <textarea type='text' name='message' required></textarea><br>
+    <textarea id='textbox' type='text' name='message' required></textarea>
+    <br>
     <div style="display:flex;justify-content:space-between">
     <input type='text' v-bind:class="{ hidden: hiddenLinkUpload }" name='linkupload' placeholder='Enter a URL'>
     <input type='file' v-bind:class="{ hidden: hiddenFileUpload }" name='upload'>
@@ -38,12 +39,16 @@
         buttonType: 'NEW THREAD',
         form_action: '',
         hiddenButton: false,
-        hiddenStatus: true
+        hiddenStatus: true,
+        captcha: ''
         }
         },
         methods: { 
-        toggleForm:function(){
-        this.hiddenForm = !this.hiddenForm;
+        showForm:function(){
+        this.hiddenForm = false;
+        },
+        hideForm:function(){
+        this.hiddenForm = true;
         },
         toggleLinkUpload:function(){
         this.hiddenLinkUpload = !this.hiddenLinkUpload;  
@@ -72,4 +77,85 @@
         }
         
     }
+
+var elements = document.getElementsByClassName("file");
+var replies = document.getElementsByClassName("reply_id");
+var other_replies = document.getElementsByClassName("other_reply");
+var container = document.getElementById('file_container');
+var image = document.getElementById('main_image');
+var video = document.getElementById('main_video');
+var textBox = document.getElementById('textbox');
+var scroll_from = document.getElementsByClassName('scrollFrom');
+var height = window.innerHeight;
+
+/*--------------HOVER TINGS--------------*/
+
+window.onload = function() {
+  container.style.maxHeight = (80/100)*height;
+};
+
+window.addEventListener('mousemove', follow, false);
+
+for (var i = 0; i < elements.length; i++) {
+    elements[i].addEventListener("mouseenter", function(){
+    var attribute = this.getAttribute("media");
+    if(attribute == 'video') {
+    video.src = this.getAttribute("href");
+    video.muted = true;
+    video.play();
+    } else {
+    image.src = this.getAttribute("href");
+    }
+    });
+
+    elements[i].addEventListener("mouseleave", function(){
+    image.src = 'http://127.0.0.1:8000/files/system/nothing.png';
+    video.src = '#';
+    });
+}
+
+function follow(e) {
+	TweenLite.to(container, 0, {
+    css: {
+      left: e.pageX+10,
+      top: e.pageY-1373/4
+    }
+  });
+}
+
+/*--------------------------------------*/
+
+/*-------------REPLY TINGS--------------*/
+
+for (var i = 0; i < replies.length; i++) {
+    replies[i].addEventListener("click", function(){ 
+      document.querySelector('.form').classList.remove("hidden");
+      var textBox = document.getElementById('textbox');
+      textBox.value += '>>'+this.innerText + '\r\n';     
+    });
+}
+
+for (var i = 0; i < other_replies.length; i++) {
+    other_replies[i].addEventListener("mouseenter", function(e){ 
+      const node = document.getElementById(this.innerText.replace(/\>>/, ''));
+      const clone = node.cloneNode(true);
+      container.append(clone);
+      clone.style.marginTop = '50px';
+    });
+
+    other_replies[i].addEventListener("mouseleave", function(e){ 
+      container.lastChild.remove();
+    });
+}
+
+for (var i = 0; i < scroll_from.length; i++) {
+    scroll_from[i].addEventListener("click", function(){ 
+      var ting = document.getElementById('container-'+this.innerText.replace(/\>>/, ''));
+      ting.scrollIntoView(); 
+      ting.style.boxShadow = '0px 0px 0px 2px #E8392C';
+      setTimeout(function(){ ting.style.boxShadow = 'none'; }, 500);
+    });
+}
+
+/*-------------------------------------*/
 </script>

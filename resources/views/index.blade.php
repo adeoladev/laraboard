@@ -25,10 +25,10 @@
 <div class='flexcenter'>
 <p class='name'>Popular Threads</p></div><br>
 <div class='flexcenter'>
-<div class='postcontainer threads'>
+<div class='postcontainer threads' style='margin: 15px;'>
 <div class='flexbox-threads'>  
         @foreach($popularThreads as $thread)
-        <div class="popularThread">
+        <div class="popularThread" style='margin:15px'>
         <div class='threadHead'>
         <strong class='title'>{{$thread->board_name[0]->name}}</strong>
         </div>
@@ -44,7 +44,8 @@
 </div>
 </div>
 </div>
+<br>
 
-
+<x-footer :boards="$boards"></x-footer>
 @endsection
 
