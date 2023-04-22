@@ -2,8 +2,16 @@
 <div>
     <div id='header'>
     <a href="/"><p class='name'>{{ app_name }}</p></a>
-    <p class='name' v-bind:class="{ hidden: hiddenButton }"><a :href="main_board_path">/{{ tag }}/ - {{ board }}</a></p>
+    <p class='name' id='boardTitle' v-bind:class="{ hidden: hiddenButton }"><a :href="main_board_path">/{{ tag }}/ - {{ board }}</a></p>
+
+    <div style='display:flex'>
+    <form method='get' style='margin:0' v-bind:class="{ hidden: searchBar }">
+    <input type="hidden" name="_token" :value="csrf">
+    <input id='search' name='search' type='text' placeholder='search' style='margin-right: 10px;'>
+    </form>
     <button class='postButton' id='postThread' v-bind:class="{ hidden: hiddenButton }" v-on:click="showForm"> {{ buttonType }} </button>
+    </div>
+
     <form class='form' :action="form_action" v-bind:class="{ hidden: hiddenForm }" method='post' enctype="multipart/form-data">
     <input type="hidden" name="_token" :value="csrf">
     <input type='text' name='name' placeholder='name (optional)'><a id='closeForm' class='replies' title='Close' v-on:click="hideForm">×</a>
@@ -17,7 +25,7 @@
     <button type='button' v-on:click="toggleLinkUpload" style="height:fit-content">{{ uploadType }} File</button>
     </div>
     <br>
-    <button type='submit'>SUBMIT</button>
+    <button type='submit' :disabled='isDisabled'>SUBMIT</button>
     </form>
     </div>
     <div id='status' v-bind:class="{ hidden: hiddenStatus }">
@@ -28,7 +36,7 @@
 
 <script>
     export default {
-        props: ['board','tag','current_page','board_path','thread_path','csrf','status','app_name','main_board_path'],
+        props: ['board','tag','current_page','board_path','thread_path','csrf','status','app_name','main_board_path','archived'],
         data() {
         return {
         hiddenForm: true,
@@ -40,7 +48,8 @@
         form_action: '',
         hiddenButton: false,
         hiddenStatus: true,
-        captcha: ''
+        searchBar: true,
+        isDisabled: false
         }
         },
         methods: { 
@@ -65,6 +74,7 @@
         this.form_action = this.board_path;
         this.buttonType = 'NEW THREAD';
         this.hiddenTitle = false;
+        this.searchBar = false;
         } else if (this.current_page == 'thread') {
         this.form_action = this.thread_path;
         this.buttonType = 'NEW REPLY';
@@ -73,6 +83,10 @@
         }
         if(this.status) {
         this.hiddenStatus = false;
+        setTimeout(function(){ document.getElementById('status').style.display = 'none'; }, 3000);
+        }
+        if(this.archived == true) {
+        this.isDisabled = true;
         }
         }
         
@@ -109,7 +123,7 @@ for (var i = 0; i < elements.length; i++) {
     });
 
     elements[i].addEventListener("mouseleave", function(){
-    image.src = 'http://127.0.0.1:8000/files/system/nothing.png';
+    image.src = domain+'/files/system/nothing.png';
     video.src = '#';
     });
 }
@@ -129,7 +143,7 @@ function follow(e) {
 
 for (var i = 0; i < replies.length; i++) {
     replies[i].addEventListener("click", function(){ 
-      document.querySelector('.form').classList.remove("hidden");
+      document.querySelector('#postThread').click();
       var textBox = document.getElementById('textbox');
       textBox.value += '>>'+this.innerText + '\r\n';     
     });

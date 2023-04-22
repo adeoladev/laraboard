@@ -1,4 +1,4 @@
-@extends('header')
+@extends('header',['page'=>null,'thread'=>null,'tag'=>null])
 <title>{{ config('app.name') }} - Error</title>
 @section('content')
 

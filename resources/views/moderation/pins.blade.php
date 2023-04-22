@@ -43,11 +43,11 @@
             <tr>
               <td>{{$thread->title ?? '-'}}</td>
               <td onclick="window.open('{{asset($thread->file)}}')" style='width:50px;height:50px;background-image:url({{asset($thread->thumbnail)}})'></td>
-              <td>{{$thread->message}}</td>
+              <td class='tmsg'>{{$thread->message}}</td>
               <td>{{$thread->files}}</td>
               <td>{{$thread->replies}}</td>
               <td>{{$thread->created_at->format('d M Y g:i a')}}</td>
-              <td><img class='icons' title='Mark as spoiler' onclick="window.location='{{route('moderation.files.spoiler',['reply'=>$thread->thread_id,'thread'=>$thread->thread_id] )}}';" src="{{asset('files/system/spoiler.png')}}"> <img class='icons' title='Pin/Un-Pin' onclick="window.location='{{route('moderation.pin',$thread->thread_id)}}';" src="{{asset('files/system/pushpin.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.archive',$thread->thread_id)}}';" title='Archive/Un-Archive' onclick="window.location='{{route('moderation.archive',$thread->thread_id)}}';" src="{{asset('files/system/archive.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.thread.delete',$thread->thread_id)}}';" title='Delete' src="{{asset('files/system/delete.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.thread.ban',$thread->thread_id)}}';" title='Delete & Ban IP' src="{{asset('files/system/ban.png')}}"></td>
+              <td><img class='icons' onclick="window.location='{{route('thread',['board' =>$thread->board,'id'=>$thread->thread_id])}}';" title='View' src="{{asset('files/system/go.png')}}"> <img class='icons' title='Pin/Un-Pin' onclick="window.location='{{route('moderation.pin',$thread->thread_id)}}';" src="{{asset('files/system/pushpin.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.archive',$thread->thread_id)}}';" title='Archive/Un-Archive' onclick="window.location='{{route('moderation.archive',$thread->thread_id)}}';" src="{{asset('files/system/archive.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.thread.delete',$thread->thread_id)}}';" title='Delete' src="{{asset('files/system/delete.png')}}"> <img class='icons' onclick="window.location='{{route('moderation.thread.ban',$thread->thread_id)}}';" title='Delete & Ban IP' src="{{asset('files/system/ban.png')}}"></td>
             </tr>
             @endforeach
         </table>

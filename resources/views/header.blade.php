@@ -10,7 +10,6 @@
 </head>
 
 <div id='app'>
-    
 <header-component 
 board="{{$name ?? null}}" 
 tag="{{$tag ?? null}}" 
@@ -20,7 +19,8 @@ board_path={{ route('newthread', $tag ?? 'x') }}
 csrf="{{csrf_token()}}" 
 status="{{ session('status') }}"
 app_name="{{config('app.name')}}"
-main_board_path="{{route('board',$tag ?? 'x')}}">
+main_board_path="{{route('board',$tag ?? 'x')}}"
+archived="{{$archived ?? null}}">
 </header-component>
 </div>
 

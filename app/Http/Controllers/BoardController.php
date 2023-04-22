@@ -19,8 +19,13 @@ public $thread;
     }
 
     public function board($board) {
+        $search = request()->input('search');
+        $threads = Threads::query();
+        if($search) {
+            $threads = $threads->where('message','LIKE','%'.$search.'%');
+        }
+        $threads = $threads->orderBy('updated_at', 'DESC')->where('board', $board)->where('pinned',false)->get();
         $pinnedThreads = Threads::where('pinned',true)->where('board', $board)->get();
-        $threads = Threads::orderBy('updated_at', 'DESC')->where('board', $board)->where('pinned',false)->get();
         $boards = Board::all();
         $thisBoard = Board::where('tag', $board)->first();
         if ($thisBoard == null) {

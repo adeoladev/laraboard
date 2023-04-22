@@ -10,6 +10,8 @@ use App\Models\Board;
 use App\Models\Category;
 use App\Models\Replies;
 use App\Models\Ban;
+use App\Models\Archive;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -146,10 +148,19 @@ class UserController extends Controller
 
     /*------------------UPDATE FUNCTIONS-----------------*/
     public function archive(Threads $thread) {
-        $thread->archived = !$thread->archived;
-        $thread->updated_at = $thread->updated_at;
+        if($thread->archived == false) {
+        $thread->archived = true;
+        Archive::create([
+            'thread' => $thread->id,
+            'deletion_date' => Carbon::now()->addMonth()->toDateTimeString()
+        ]);
+        } else {
+        $thread->archived = false;
+        Archive::where('thread',$thread->id)->delete();
+        }
         $thread->save();
-        return redirect()->back()->with('status','Pin status changed');
+
+        return redirect()->back()->with('status','Archive status changed.');
     }
 
     public function pin(Threads $thread) {
@@ -216,7 +227,7 @@ class UserController extends Controller
         return redirect()->back();
     }
 
-    public function spoilerFile(Replies $reply, $thread) {
+    /*public function spoilerFile(Replies $reply, $thread) {
         $reply->thumbnail = 'files/system/spoiler.jpg';
         $thread = Threads::find($thread);
 
@@ -228,7 +239,7 @@ class UserController extends Controller
         $reply->save();
 
         return redirect()->back()->with('status','File updated.');
-    }
+    }*/
 
     /*---------------DELETE FUNCTIONS-------------------*/
     public function deleteThread(Threads $thread) {
@@ -329,6 +340,24 @@ class UserController extends Controller
         $reply->save();
 
         return redirect()->back()->with('status','File deleted.');
+    }
+
+    public function deleteFileBan(Replies $reply, Threads $thread) {
+        $this->deleteFile($reply,$thread);
+
+        Ban::create([
+            'ip_address' => $reply->ip_address
+        ]);
+
+        return redirect()->back()->with('status','File deleted and IP banned.');
+    }
+
+    public function deleteFilePost(Replies $reply, Threads $thread) {
+        $this->deleteFile($reply,$thread);
+
+        Replies::find($reply->id)->delete();
+
+        return redirect()->back()->with('status','File and post deleted.');
     }
 
     /*--------------CREATION FUNCTIONS--------------*/

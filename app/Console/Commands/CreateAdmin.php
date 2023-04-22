@@ -12,7 +12,7 @@ class CreateAdmin extends Command
      *
      * @var string
      */
-    protected $signature = 'Laraboard:Admin';
+    protected $signature = 'laraboard:admin';
 
     /**
      * The console command description.

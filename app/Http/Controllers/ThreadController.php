@@ -103,5 +103,6 @@ class ThreadController extends Controller
     
         return redirect()->back()->with('status','Reply posted.');
     }
+
 }
 

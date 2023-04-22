@@ -1,6 +1,7 @@
-@extends('header',['page'=>'thread','thread'=>$mainmsg->thread_id,'tag'=>$tag,'name'=>$name])
+@extends('header',['page'=>'thread','thread'=>$mainmsg->thread_id,'tag'=>$tag,'name'=>$name,'archived'=>$mainmsg->thread->archived])
 <title>/{{$tag}}/ - {{$mainmsg->message}}</title>
 @section('content')
+<script> var domain="{{Request::root()}}"; </script>
 
 <br>
 
@@ -17,7 +18,7 @@
 <div id='{{$mainmsg->reply_id}}' class='postcontainer'>
         <div class='threadHead'> 
                 @if(isset(auth()->user()->username))
-                <img class='icons' title='Archive' src="{{asset('files/system/archive.png')}}"> <img class='icons' title='Mark as spoiler' onclick="window.location='{{route('moderation.files.spoiler',['reply'=>$mainmsg->reply_id,'thread'=>$mainmsg->reply_id] )}}';" src="{{asset('files/system/spoiler.png')}}"> <img class='icons' title='Delete' onclick="window.location='{{route('moderation.thread.delete', $mainmsg->reply_id)}}';"src="{{asset('files/system/delete.png')}}"> <img class='icons' title='Delete & Ban IP' onclick="window.location='{{route('moderation.thread.ban', $mainmsg->reply_id)}}';" src="{{asset('files/system/ban.png')}}">
+                <img class='icons' title='Archive' src="{{asset('files/system/archive.png')}}"> <img class='icons' title='Delete' onclick="window.location='{{route('moderation.thread.delete', $mainmsg->reply_id)}}';"src="{{asset('files/system/delete.png')}}"> <img class='icons' title='Delete & Ban IP' onclick="window.location='{{route('moderation.thread.ban', $mainmsg->reply_id)}}';" src="{{asset('files/system/ban.png')}}">
                 @endif
                 <span class='title'></span> <span class='name'>{{$mainmsg->name}}</span> <span class='title'>{{$mainmsg->Thread->title}}</span> <span class='date'>{{$mainmsg->created_at->format('F dS Y g:mA')}}</span> <span class='replies'>No.</span><span class='replies reply_id'>{{$mainmsg->thread_id}}</span> 
                 @if($mainmsg->Thread->pinned == true)<img class='icons' title='Pinned' src="{{asset('files/system/pushpin.png')}}">@endif
@@ -45,7 +46,7 @@
         <div id='{{$reply->reply_id}}' class='postcontainer reply-width'>
         <div class='threadHead'>
                 @if(isset(auth()->user()->username))
-                <img class='icons' title='Mark as spoiler' onclick="window.location='{{route('moderation.files.spoiler',['reply'=>$reply->reply_id,'thread'=>$reply->reply_id] )}}';" src="{{asset('files/system/spoiler.png')}}"> <img class='icons' title='Delete' onclick="window.location='{{route('moderation.reply.delete', $reply->reply_id)}}';"src="{{asset('files/system/delete.png')}}"> <img class='icons' title='Delete & Ban IP' onclick="window.location='{{route('moderation.reply.ban', $reply->reply_id)}}';" src="{{asset('files/system/ban.png')}}">
+                <img class='icons' title='Delete' onclick="window.location='{{route('moderation.reply.delete', $reply->reply_id)}}';"src="{{asset('files/system/delete.png')}}"> <img class='icons' title='Delete & Ban IP' onclick="window.location='{{route('moderation.reply.ban', $reply->reply_id)}}';" src="{{asset('files/system/ban.png')}}">
                 @endif
                 <span class='name'>{{$reply->name}}</span> <span class='date'>{{$reply->created_at->format('F dS Y g:mA')}}</span> <span class='replies'>No.</span><span class='replies reply_id'>{{$reply->reply_id}}</span>
                 @if($reply->reply_from) 
@@ -78,6 +79,4 @@
 </div>
 
 <x-footer :boards="$boards"></x-footer>
-<!--<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
-<script type="text/javascript" src="{{ asset('js/thread.js') }}" async defer></script>-->
 @endsection
