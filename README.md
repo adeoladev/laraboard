@@ -29,7 +29,7 @@ Imageboard engine written in Laravel and Vue.<br /><br />
 
 ## Installation
 ```sh
-git clone ``https://github.com/adeoladev/laraboard.git``
+git clone https://github.com/adeoladev/laraboard.git
 cd Laraboard
 php artisan migrate:fresh
 php artisan laraboard:admin
@@ -37,3 +37,6 @@ php artisan serve
 npm run build
 ```
 Then navigate to ``http://127.0.0.1:8000/moderation`` in your browser and log into the admin dashboard with "Admin" for the username and "password" for the password to begin building your imageboard.
+
+## License
+MIT. Copyright (c) 2023 Adeola Boye.
