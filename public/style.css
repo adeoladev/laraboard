@@ -15,6 +15,12 @@ body {
     margin: 40px 0px 0px 0px;
     overflow-x: hidden;
 }
+label {
+    font-family:arial;
+    font-size:12px;
+    padding-top: 3px;
+    margin-left: 5px;
+}
 .hidden {
     display:none;
 }

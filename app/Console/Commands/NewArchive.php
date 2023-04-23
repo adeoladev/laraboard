@@ -31,7 +31,7 @@ class NewArchive extends Command
     public function handle()
     {
         $expiredThreads = Thread::where('replies','>',300)->get();
-        $deadThreads = Thread::where('replies','<',10)->where('created_at','>',Carbon::now()->subWeek(1)->toDateTimeString())->get();
+        $deadThreads = Thread::where('replies','<',10)->where('created_at','<',Carbon::now()->subWeek(1)->toDateTimeString())->get();
 
         foreach($expiredThreads as $thread) {
             $thread->archived = true;

@@ -19,9 +19,13 @@
     <br>
     <textarea id='textbox' type='text' name='message' required></textarea>
     <br>
-    <div style="display:flex;justify-content:space-between">
-    <input type='text' v-bind:class="{ hidden: hiddenLinkUpload }" name='linkupload' placeholder='Enter a URL'>
+    <div style="display:flex;">
+    <span style="width: 220px;">
+    <input type='text' v-bind:class="{ hidden: hiddenLinkUpload }" name='linkupload' placeholder='Enter a URL' style='width: 100%;'>
     <input type='file' v-bind:class="{ hidden: hiddenFileUpload }" name='upload'>
+    </span>
+    <label for='spoiler'> spoiler</label>
+    <input id='spoiler' name='spoiler' type='checkbox' title='Spoiler'>
     <button type='button' v-on:click="toggleLinkUpload" style="height:fit-content">{{ uploadType }} File</button>
     </div>
     <br>

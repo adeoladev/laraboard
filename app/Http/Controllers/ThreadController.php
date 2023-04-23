@@ -88,6 +88,10 @@ class ThreadController extends Controller
         Threads::where('thread_id', $id)->increment('files');
         }
 
+        if ($request->spoiler) {
+            $thumbnail = 'files/system/spoiler.jpg';
+        }
+
         Replies::create([
             'reply_id' => $bestid,
             'reply_to' => $replyto ?? null,

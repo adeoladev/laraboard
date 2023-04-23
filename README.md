@@ -24,7 +24,7 @@ Imageboard engine written in Laravel and Vue.<br /><br />
 
 ## Cons
 - No captcha system
-- No greentext or spoilers
+- No green-text or spoiler text
 - Buggy video uploads (ffmpeg errors)
 
 ## Installation

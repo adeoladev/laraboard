@@ -74,6 +74,10 @@ public $thread;
             FFMpeg::open($filepath)->addFilter('-vf','scale=iw*.5:ih*.5')->export()->save($thumbnail);
         }
 
+        if ($request->spoiler) {
+            $thumbnail = 'files/system/spoiler.jpg';
+        }
+
         Threads::create([
             'thread_id' => $bestid,
             'name' => $request->name ?? 'Anonymous',

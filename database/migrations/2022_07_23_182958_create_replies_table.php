@@ -23,6 +23,7 @@ class CreateRepliesTable extends Migration
             $table->string('message', 500);
             $table->string('thumbnail')->nullable();
             $table->string('file')->nullable();
+            $table->string('file_type')->nullable();
             $table->string('ip_address');
             $table->string('board');
             $table->timestamps();
