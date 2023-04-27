@@ -43,7 +43,7 @@
               <th>Username</th>
               <th>Email</th>
               <th>Rank</th>
-              <th>Ip Address</th>
+              <th>IP Address</th>
               <th>Date</th>
               <th>Action</th>
             </tr>
@@ -54,12 +54,15 @@
               <td>{{$user->rank}}</td>
               <td>{{$user->ip_address}}</td>
               <td>{{$user->created_at->format('d M Y g:i a')}}</td>
-            <td><img class='icons' onclick="window.location='{{route('moderation.users.delete',$user->id)}}'" title='Delete' src="{{asset('files/system/delete.png')}}"></td>
+            <td>
+              <img class='icons' onclick="window.location='{{route('moderation.users.delete',$user->id)}}'" title='Delete' src="{{asset('files/system/delete.png')}}">
+              <img class='icons' onclick="window.location='{{route('moderation.ban.redirect',$user->ip_address)}}'" title='Ban' src="{{asset('files/system/ban.png')}}">
+            </td>
             </tr>
             @endforeach
         </table>
 
-          {{$users->links()}}
+        {{$users->withQueryString()->links()}}
 </div>
 </div>
 

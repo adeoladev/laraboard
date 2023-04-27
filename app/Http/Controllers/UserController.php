@@ -12,6 +12,7 @@ use App\Models\Replies;
 use App\Models\Ban;
 use App\Models\Archive;
 use Carbon\Carbon;
+use Uuid;
 
 class UserController extends Controller
 {
@@ -85,7 +86,7 @@ class UserController extends Controller
         $files = $files->where('board',$board);
         }
 
-        $files = $files->where('file','!=',null)->orderBy('created_at','DESC')->paginate(40);
+        $files = $files->where('file','!=',null)->where('file','!=','files/system/deleted.jpg')->orderBy('created_at','DESC')->paginate(40);
         return view('moderation.files',compact('files','boards'));
     }
 
@@ -123,6 +124,11 @@ class UserController extends Controller
         return view('moderation.pins',compact('threads','boards'));
     }
 
+    public function bans() {
+        $bans = Ban::orderBy('expiration_date','desc')->paginate(20);
+
+        return view('moderation.bans',compact('bans'));
+    }
 
     public function login(Request $request) {
 
@@ -135,14 +141,34 @@ class UserController extends Controller
         $validPassword = Hash::check($request->password, $existingUser->password ?? null);
 
         if(!$existingUser) {
-           return redirect()->back()->with('status','Invalid username or password.');
+           return redirect()->back()->with('status','Invalid username or password');
         } else if ($validPassword == false) {
-           return redirect()->back()->with('status','Invalid username or password.');
+           return redirect()->back()->with('status','Invalid username or password');
         } else {
            auth()->attempt(array('username' => $request->username, 'password' => $request->password));
            return redirect()->route('moderation.threads');
         }
 
+    }
+
+    public function register($username) {
+        $user = User::where('username',$username)->first();
+        $uuid = Uuid::import($username);
+        if(!isset($uuid->version) || !$user) {
+            abort(404);
+        }
+
+        return view('moderation.register',compact('user'));
+    }
+
+    public function registerProcess(Request $request) {
+        User::find($request->id)->update([
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+            'ip_address' => $_SERVER['REMOTE_ADDR']
+        ]);
+
+        return redirect()->route('moderation.threads');
     }
 
 
@@ -160,7 +186,7 @@ class UserController extends Controller
         }
         $thread->save();
 
-        return redirect()->back()->with('status','Archive status changed.');
+        return redirect()->back()->with('status','Archive status changed');
     }
 
     public function pin(Threads $thread) {
@@ -182,7 +208,7 @@ class UserController extends Controller
         $board->save();
         }
 
-        return redirect()->back()->with('status','board renamed.');
+        return redirect()->back()->with('status','board renamed');
     }
 
     public function renameCategory(Request $request) {
@@ -198,7 +224,7 @@ class UserController extends Controller
         $category->save();
         }
 
-        return redirect()->back()->with('status','Category renamed.');
+        return redirect()->back()->with('status','Category renamed');
     }
 
     public function changePassword(Request $request) {
@@ -206,7 +232,7 @@ class UserController extends Controller
             'password'=> Hash::make($request->password)
         ]);
 
-        return redirect()->back()->with('status','Password changed.');
+        return redirect()->back()->with('status','Password changed');
     }
 
     public function userInvite(Request $request) {
@@ -216,81 +242,84 @@ class UserController extends Controller
             'rank' => 'required'
         ]);
 
-        $randomnum = rand(10,100);
+        $uuid = Uuid::generate()->string;
+
         User::create([
-            'username' => $randomnum,
+            'username' => $uuid,
             'email' => $request->email,
+            'ip_address' => '000.000.000',
             'rank' => $request->rank 
         ]);
-        //mail($request->email,"Become a ".config('app.name')." Moderator!", "<a href=".route('moderation.register', $randomnum).">Link</a>");
+        //mail($request->email,"Become a ".config('app.name')." Moderator!", "<a href=".route('register', $uuid).">Link</a>");
 
-        return redirect()->back();
+        return redirect()->back()->with('status','User invited');
     }
 
-    /*public function spoilerFile(Replies $reply, $thread) {
-        $reply->thumbnail = 'files/system/spoiler.jpg';
-        $thread = Threads::find($thread);
 
-        if ($thread) {
-        $thread->thumbnail = 'files/system/spoiler.jpg';
-        $thread->save();
-        }
-
-        $reply->save();
-
-        return redirect()->back()->with('status','File updated.');
-    }*/
+    public function unban($ip) {
+        Ban::where('ip_address',$ip)->delete();
+        return redirect()->back()->with('status','IP unbanned');
+    }
 
     /*---------------DELETE FUNCTIONS-------------------*/
     public function deleteThread(Threads $thread) {
         
-        $files = Replies::where('thread_id',$thread->thread_id)->where('file','!=', null)->get();
+        $replies = Replies::where('thread_id',$thread->thread_id)->get();
         
-        if($files) {
-         foreach($files as $onefile) {
-             //unlink($onefile->thumbnail);
-             unlink($onefile->file);
-         }
+        foreach($replies as $reply) {
+            if($reply->thumbnail !== 'files/system/spoiler.jpg') {
+            unlink($reply->thumbnail); 
+            }
+            unlink($reply->file);
+            $reply->delete();
         }
 
-        Replies::where('thread_id',$thread->thread_id)->delete();
         $thread->delete();
-        return redirect()->back()->with('status','Thread deleted.');
+        return redirect()->back()->with('status','Thread deleted');
     }
 
     public function deleteReply(Replies $reply) {
         
         if($reply->file) {
-             //unlink($reply->thumbnail);
              unlink($reply->file);
         }
 
         $reply->delete();
-        return redirect()->back()->with('status','Reply deleted.');;
+        return redirect()->back()->with('status','Reply deleted');;
     }
 
-    public function deleteThreadBan(Threads $thread) {
+    public function banRedirect($ip) {
+
+        session()->flash('ip',$ip);
+        return redirect()->route('moderation.bans');
+    }
+     
+    public function banProcess(Request $request) {
        
+        switch ($request->expiration) {
+            case 'day':
+              $date = Carbon::now()->addDay()->toDateTimeString();
+              break;
+            case 'week':
+              $date = Carbon::now()->addWeek()->toDateTimeString();
+              break;
+            case 'month':
+              $date = Carbon::now()->addMonth()->toDateTimeString();
+              break;
+            default:
+              $date = null;
+        }
+
         Ban::create([
-            'ip_address' => $thread->ip_address
+            'ip_address' => $request->ip_address,
+            'expiration_date' => $date
         ]);
 
-        $this->deleteThread($thread);
+        Threads::where('ip_address',$request->ip_address)->delete();
+        Replies::where('ip_address',$request->ip_address)->delete();
 
-        return redirect()->back()->with('status','Thread deleted and IP banned.');
+        return redirect()->back()->with('status','IP banned and posts deleted');
     }
-
-    public function deleteReplyBan(Replies $reply) {
-       
-        Ban::create([
-            'ip_address' => $reply->ip_address
-        ]);
-
-        $reply->delete();
-
-        return redirect()->back()->with('status','Thread deleted and IP banned.');
-    }
-
 
     public function deleteBoard(Board $board) {
 
@@ -302,7 +331,7 @@ class UserController extends Controller
 
         $board->delete();
 
-        return redirect()->back()->with('status','Board renamed.');
+        return redirect()->back()->with('status','Board renamed');
     }
 
     public function deleteCategory(Category $category) {
@@ -315,18 +344,22 @@ class UserController extends Controller
 
         $category->delete();
 
-        return redirect()->back()->with('status','Category deleted.');
+        return redirect()->back()->with('status','Category deleted');
     }
 
     public function deleteUser(User $user) {
         $user->delete();
 
-        return redirect()->back()->with('status','User deleted.');
+        return redirect()->back()->with('status','User deleted');
     }
 
     public function deleteFile(Replies $reply, Threads $thread) {
-        //unlink($reply->thumbnail);
+        dd($reply->thumbnail);
         unlink($reply->file);
+
+        if($reply->thumbnail !== 'files/system/spoiler.jpg') {
+            unlink($reply->thumbnail);
+        }
 
         $reply->thumbnail = 'files/system/deleted.jpg';
         $reply->file = 'files/system/deleted.jpg';
@@ -339,7 +372,7 @@ class UserController extends Controller
 
         $reply->save();
 
-        return redirect()->back()->with('status','File deleted.');
+        return redirect()->back()->with('status','File deleted');
     }
 
     public function deleteFileBan(Replies $reply, Threads $thread) {
@@ -349,7 +382,7 @@ class UserController extends Controller
             'ip_address' => $reply->ip_address
         ]);
 
-        return redirect()->back()->with('status','File deleted and IP banned.');
+        return redirect()->back()->with('status','File deleted and IP banned');
     }
 
     public function deleteFilePost(Replies $reply, Threads $thread) {
@@ -357,7 +390,7 @@ class UserController extends Controller
 
         Replies::find($reply->id)->delete();
 
-        return redirect()->back()->with('status','File and post deleted.');
+        return redirect()->back()->with('status','File and post deleted');
     }
 
     /*--------------CREATION FUNCTIONS--------------*/
@@ -373,7 +406,7 @@ class UserController extends Controller
             'category' => $request->category
         ]);
 
-        return redirect()->back()->with('status','Board added.');
+        return redirect()->back()->with('status','Board added');
     }
 
     public function newCategory(Request $request) {
@@ -387,7 +420,7 @@ class UserController extends Controller
             'content' => $request->content
         ]);
 
-        return redirect()->back()->with('status','Category added.');
+        return redirect()->back()->with('status','Category added');
     }
 
    

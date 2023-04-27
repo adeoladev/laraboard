@@ -32,7 +32,7 @@ Imageboard engine written in Laravel and Vue.<br /><br />
 git clone https://github.com/adeoladev/laraboard.git
 cd Laraboard
 php artisan migrate:fresh
-php artisan laraboard:admin
+php artisan admin:account
 php artisan serve
 npm run build
 ```

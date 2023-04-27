@@ -1,3 +1,4 @@
+<br>
 <div class='tabs'>
 <a href="{{route('moderation.threads')}}"><p @if(request()->routeIs('moderation.threads')) class='title' @else class='date' @endif>Threads</p></a>
 @if(auth()->user()->rank == 'admin')
@@ -8,4 +9,6 @@
 <a href="{{route('moderation.files')}}"><p @if(request()->routeIs('moderation.files')) class='title' @else class='date' @endif>Files</p></a>
 <a href="{{route('moderation.archives')}}"><p @if(request()->routeIs('moderation.archives')) class='title' @else class='date' @endif>Archives</p></a>
 <a href="{{route('moderation.pins')}}"><p @if(request()->routeIs('moderation.pins')) class='title' @else class='date' @endif>Pins</p></a>
+<a href="{{route('moderation.bans')}}"><p @if(request()->routeIs('moderation.bans')) class='title' @else class='date' @endif>Bans</p></a>
+
 </div>

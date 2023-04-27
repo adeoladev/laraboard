@@ -16,7 +16,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('new:archive')->weekly();
-        $schedule->command('delete:archive')->weekly();       
+        $schedule->command('delete:archive')->weekly();    
+        $schedule->command('unban:people')->daily();    
     }
 
     /**

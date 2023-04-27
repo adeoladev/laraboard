@@ -6,6 +6,7 @@ use App\Models\Threads;
 use App\Models\Replies;
 use App\Models\Category;
 use App\Models\Board;
+use App\Models\Ban;
 
 class BoardController extends Controller {
 
@@ -36,6 +37,14 @@ public $thread;
 
     public function newThread(Request $request, $tag) {
 
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $ban = Ban::where('ip_address',$ip)->first();
+
+        if($ban) {
+            $date = $ban->expiration_date ?? 'forever';
+            return redirect()->back()->with('status',"You're banned until: ".$date);
+        }
+        
         $request->validate([
             'title' => 'max:48',
             'name' => 'max:48',

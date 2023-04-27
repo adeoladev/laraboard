@@ -9,4 +9,5 @@ class Ban extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $casts= ['expiration_date'=>'datetime'];
 }

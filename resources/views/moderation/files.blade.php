@@ -27,10 +27,10 @@
         <div class="grid-container">
         @foreach($files as $file)
         <div>
-        <img onclick="window.open('{{asset($file->file)}}')" src="{{asset($file->thumbnail)}}"><br>
-        <img onclick="window.location='{{route('moderation.files.delete',['reply'=>$file->reply_id,'thread'=>$file->thread_id] )}}';" class='icons' title='Delete file only' src="{{asset('files/system/delete-image.png')}}">
-        <img onclick="window.location='{{route('moderation.files.delete.post',['reply'=>$file->reply_id,'thread'=>$file->thread_id] )}}'" class='icons' title='Delete file and post' src="{{asset('files/system/delete.png')}}">
-        <img onclick="window.location='{{route('moderation.files.delete.ban',['reply'=>$file->reply_id,'thread'=>$file->thread_id] )}}'" class='icons' title='Delete and Ban IP' src="{{asset('files/system/ban.png')}}">
+          <img onclick="window.open('{{asset($file->file)}}')" src="{{asset($file->thumbnail)}}"><br>
+          <img onclick="window.location='{{route('moderation.files.delete',['reply'=>$file->reply_id,'thread'=>$file->thread_id] )}}';" class='icons' title='Delete file only' src="{{asset('files/system/delete-image.png')}}">
+          <img onclick="window.location='{{route('moderation.files.delete.post',['reply'=>$file->reply_id,'thread'=>$file->thread_id] )}}'" class='icons' title='Delete file and post' src="{{asset('files/system/delete.png')}}">
+          <img onclick="window.location='{{route('moderation.files.delete.ban',['reply'=>$file->reply_id,'thread'=>$file->thread_id] )}}'" class='icons' title='Delete and Ban IP' src="{{asset('files/system/ban.png')}}">
         </div>
         @endforeach
         </div>

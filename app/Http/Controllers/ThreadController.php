@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Threads;
 use App\Models\Replies;
 use App\Models\Board;
+use App\Models\Ban;
 
 class ThreadController extends Controller
 {
@@ -21,6 +22,14 @@ class ThreadController extends Controller
 
     public function newReply(Request $request, $id) {
 
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $ban = Ban::where('ip_address',$ip)->first();
+
+        if($ban) {
+            $date = $ban->expiration_date ?? 'forever';
+            return redirect()->back()->with('status',"You're banned until: ".$date);
+        }
+
         $request->validate([
             'name' => 'max:48',
             'message' => 'required',
@@ -32,7 +41,6 @@ class ThreadController extends Controller
         $board = $vars[1];
         
         $finalMessage = $request->message;
-        $ip = $_SERVER['REMOTE_ADDR'];
         $bestid = substr(str_shuffle("0123456789"), 0, 10);
 
         if (isset($_FILES['upload']) && $_FILES['upload']['size'] > 0) { 

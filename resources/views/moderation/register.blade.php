@@ -1,0 +1,19 @@
+@extends('header',['page'=>'moderation','thread'=>null,'tag'=>null])
+<title>{{ config('app.name') }} - Moderation</title>
+@section('content')
+
+<br>
+
+<div class='flexcenter'><p class='name'>Moderation</p></div><br>
+
+    <div class='flexcenter'>
+        <div style='padding:10px'>
+        <form method='post' action="{{route('register.process')}}">
+        @csrf
+        <input type='hidden' name='id' value="{{$user->id}}">
+        <input type='text' name='username' placeholder='username'>
+        <input type='password' name='password' placeholder='password'>
+        <button>Register</button>
+        </form>
+        </div>
+    </div>

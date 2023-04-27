@@ -41,9 +41,7 @@ label {
 textarea {
     width:100%;
     height:130px;
-    max-height:220px;
-    max-width:400px;
-    min-width:338.5px;
+    resize:none;
 }
 .postButton {
     font-size: 12px;

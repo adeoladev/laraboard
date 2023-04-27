@@ -24,7 +24,9 @@ Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::get('/archive/{thread}', [UserController::class, 'archive'])->name('moderation.archive');
 Route::get('/pin/{thread}', [UserController::class, 'pin'])->name('moderation.pin');
 Route::get('/thread/delete/{thread}', [UserController::class, 'deleteThread'])->name('moderation.thread.delete');
-Route::get('/thread/ban/{thread}', [UserController::class, 'deleteThreadBan'])->name('moderation.thread.ban');
+Route::get('/banRedirect/{ip}', [UserController::class, 'banRedirect'])->name('moderation.ban.redirect');
+Route::post('/banProcess', [UserController::class, 'banProcess'])->name('moderation.ban.process');
+Route::get('/unban/{ip}', [UserController::class, 'unban'])->name('moderation.unban');
 Route::get('/thread/search', [UserController::class, 'delete'])->name('moderation.thread.search');
 Route::post('/board/new', [UserController::class, 'newBoard'])->name('moderation.board.new');
 Route::post('/board/rename', [UserController::class, 'renameBoard'])->name('moderation.board.rename');
@@ -40,7 +42,6 @@ Route::get('/files/delete/{reply}/{thread}/ban', [UserController::class, 'delete
 Route::get('/files/delete/{reply}/{thread}/post', [UserController::class, 'deleteFilePost'])->name('moderation.files.delete.post');
 //Route::get('/files/spoiler/{reply}/{thread}', [UserController::class, 'spoilerFile'])->name('moderation.files.spoiler');
 Route::get('/reply/delete/{reply}', [UserController::class, 'deleteReply'])->name('moderation.reply.delete');
-Route::get('/reply/ban/{reply}', [UserController::class, 'deleteReplyBan'])->name('moderation.reply.ban');
 
 Route::group(['middleware'=>['auth.custom:web']], function() {
     Route::get('/threads', [UserController::class, 'threads'])->name('moderation.threads');
@@ -51,6 +52,7 @@ Route::group(['middleware'=>['auth.custom:web']], function() {
     Route::get('/files', [UserController::class, 'files'])->name('moderation.files');
     Route::get('/archives', [UserController::class, 'archives'])->name('moderation.archives');
     Route::get('/pins', [UserController::class, 'pins'])->name('moderation.pins');
+    Route::get('/bans', [UserController::class, 'bans'])->name('moderation.bans');
 });
 
 });
@@ -60,5 +62,7 @@ Route::get('/{board}/thread/{id}', [ThreadController::class, 'index'])->name('th
 Route::get('/{board}', [BoardController::class, 'board'])->name('board');
 Route::post('/newthread/{tag}', [BoardController::class, 'newThread'])->name('newthread');
 Route::post('/newreply/{id}', [ThreadController::class, 'newReply'])->name('newreply');
+Route::get('/register/{username}', [UserController::class, 'register'])->name('register');
+Route::post('/register/process', [UserController::class, 'registerProcess'])->name('register.process');
 
 

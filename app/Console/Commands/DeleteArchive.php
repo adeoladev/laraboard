@@ -39,6 +39,7 @@ class DeleteArchive extends Command
             }
         }
 
+        return $this->comment($archives->count().' archives deleted!');
         return Command::SUCCESS;
     }
 }

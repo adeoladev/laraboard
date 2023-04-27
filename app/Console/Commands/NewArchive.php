@@ -53,6 +53,7 @@ class NewArchive extends Command
             ]);
         }
 
+        return $this->comment($expiredThreads->count()+$deadThreads->count().' threads archived!');
         return Command::SUCCESS;
     }
 }

@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('bans', function (Blueprint $table) {
             $table->id();
             $table->string('ip_address');
+            $table->timestamp('expiration_date')->nullable();
             $table->timestamps();
         });
     }
