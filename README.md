@@ -25,14 +25,13 @@ Imageboard engine written in Laravel and Vue.<br /><br />
 ## Cons
 - No captcha system
 - No green-text or spoiler text
-- Buggy video uploads (ffmpeg errors)
 
 ## Installation
 ```sh
 git clone https://github.com/adeoladev/laraboard.git
 cd Laraboard
 php artisan migrate:fresh
-php artisan admin:account
+php artisan create:admin
 php artisan serve
 npm run build
 ```

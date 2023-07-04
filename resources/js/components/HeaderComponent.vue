@@ -6,7 +6,6 @@
 
     <div style='display:flex'>
     <form method='get' style='margin:0' v-bind:class="{ hidden: searchBar }">
-    <input type="hidden" name="_token" :value="csrf">
     <input id='search' name='search' type='text' placeholder='search' style='margin-right: 10px;'>
     </form>
     <button class='postButton' id='postThread' v-bind:class="{ hidden: hiddenButton }" v-on:click="showForm"> {{ buttonType }} </button>
@@ -14,9 +13,10 @@
 
     <form class='form' :action="form_action" v-bind:class="{ hidden: hiddenForm }" method='post' enctype="multipart/form-data">
     <input type="hidden" name="_token" :value="csrf">
-    <input type='text' name='name' placeholder='name (optional)'><a id='closeForm' class='replies' title='Close' v-on:click="hideForm">×</a>
-    <input type='text' name='title' v-bind:class="{ hidden: hiddenTitle }" placeholder='title (optional)' maxlength="48">
-    <br>
+    <div style="width: 100%;display: flex;justify-content: space-between;">
+    <input type='text' name='name' placeholder='name (optional)' style='width:100%'><a id='closeForm' class='replies' title='Close' v-on:click="hideForm">×</a>
+    <input type='text' name='title' style='width:100%' v-bind:class="{ hidden: hiddenTitle }" placeholder='title (optional)' maxlength="48">
+    </div>
     <textarea id='textbox' type='text' name='message' required></textarea>
     <br>
     <div style="display:flex;">

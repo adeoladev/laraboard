@@ -7,15 +7,36 @@ use App\Models\Replies;
 use App\Models\Category;
 use App\Models\Board;
 use App\Models\Ban;
+use Illuminate\Support\Facades\Cookie;
 
 class BoardController extends Controller {
 
 public $thread;
 
     public function index() {
-        $categories = Category::all();
+        $nsfwBoards = Board::whereHas('category',function($q) {
+            $q->where('content','nsfw');
+        })->get('tag');
         $boards = Board::all();
-        $popularThreads = Threads::orderBy('replies','DESC')->get()->take(6);
+        $popularThreads = Threads::query();
+        $categories = Category::query();
+
+        if(Cookie::get('board_filter') == 'SFW Boards') {
+        $categories = $categories->whereHas('boards',function($q) {
+            $q->where('content','sfw');
+        })->get();
+        $popularThreads = $popularThreads->whereNotIn('board',$nsfwBoards);
+        } else if (Cookie::get('board_filter') == 'NSFW Boards') {
+        $categories = $categories->whereHas('boards', function($q) {
+            $q->where('content','nsfw');
+        })->get();
+        $popularThreads = $popularThreads->whereIn('board',$nsfwBoards);
+        } else {
+        $categories = $categories->get();
+        }
+
+        $popularThreads = $popularThreads->orderBy('replies','DESC')->get()->take(6);
+
         return view('index', compact('categories','popularThreads','boards'));
     }
 
@@ -115,6 +136,11 @@ public $thread;
 
         return redirect()->back()->with('status','Thread posted.');
         
+    }
+
+    public function setCookie($cookie) {
+        Cookie::queue(Cookie::make('board_filter', $cookie, 2592000));
+        return redirect()->back();
     }
 
 }

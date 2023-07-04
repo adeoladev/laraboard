@@ -58,6 +58,7 @@ Route::group(['middleware'=>['auth.custom:web']], function() {
 });
 
 Route::get('/newcaptcha', [ThreadController::class, 'newCaptcha'])->name('captcha');
+Route::get('/setcookie/{cookie}', [BoardController::class, 'setCookie'])->name('cookie');
 Route::get('/{board}/thread/{id}', [ThreadController::class, 'index'])->name('thread');
 Route::get('/{board}', [BoardController::class, 'board'])->name('board');
 Route::post('/newthread/{tag}', [BoardController::class, 'newThread'])->name('newthread');

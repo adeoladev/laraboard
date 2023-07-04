@@ -86,9 +86,13 @@ class ThreadController extends Controller
 
         Threads::where('thread_id', $id)->increment('replies');
 
-        if (isset($file)) {
+        if (isset($file) && str_contains($request->file('upload')->getMimeType(), 'video')) {
+        FFMpeg::open($filepath)->exportFramesByAmount(1)->addFilter('-vf','scale=iw*.5:ih*.5')->save($thumbnail);
+        } else if (isset($file) && str_contains($request->file('upload')->getMimeType(), 'image')) {
         FFMpeg::open($filepath)->addFilter('-vf','scale=iw*.5:ih*.5')->export()->save($thumbnail);  
-        } else if (isset($request->linkupload) && filter_var($request->linkupload, FILTER_VALIDATE_URL)) {
+        }
+        
+        if (isset($request->linkupload) && filter_var($request->linkupload, FILTER_VALIDATE_URL)) {
         FFMpeg::openUrl($request->linkupload)->export()->save("files/$bestid.jpg");
         FFMpeg::open("files/$bestid.jpg")->addFilter('-vf','scale=iw*.5:ih*.5')->export()->save("files/thumbnails/$bestid.jpg"); 
         $filepath = "files/$bestid.jpg";

@@ -1,13 +1,20 @@
 @extends('header',['page'=>'index','thread'=>null,'tag'=>null])
 <title>{{ config('app.name') }}</title>
 @section('content')
+<script src="{{ asset('js/index.js') }}"></script>
 
 <br>
 
 <div class='flexcenter'><p class='name'>Boards</p></div><br>
 <div class='flexcenter'>
-<div class='postcontainer'>  
-        <div class='flexwrap'>    
+<div class='postcontainer' style='position:relative;overflow:unset'>  
+        <p id='filterButton' onclick="toggleFilter()">filter ▼</p> 
+        <ul id='filterMenu' class='hidden'>
+        <a href="{{route('cookie','All Boards')}}"><li>Show All Boards @if(Cookie::get('board_filter') == 'All Boards') ✔ @endif</li></a>
+        <a href="{{route('cookie','SFW Boards')}}"><li>Show Worksafe Boards Only @if(Cookie::get('board_filter') == 'SFW Boards') ✔ @endif</li></a>
+        <a href="{{route('cookie','NSFW Boards')}}"><li>Show NSFW Boards Only @if(Cookie::get('board_filter') == 'NSFW Boards') ✔ @endif</li></a>
+        </ul>
+        <div class='flexwrap'>   
         @foreach($categories as $category)
         <div style='padding:10px'>
         <strong class='name'>{{$category->name}}</strong>@if($category->content == 'nsfw') <strong style='color:red;font-size: smaller;'>(nsfw)</strong> @endif<br>

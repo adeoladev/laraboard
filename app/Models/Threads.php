@@ -14,4 +14,9 @@ class Threads extends Model
     {
         return $this->hasMany(Board::class,'tag','board');
     }
+
+    public function board()
+    {
+        return $this->hasMany(Board::class,'id','board');
+    }
 }
