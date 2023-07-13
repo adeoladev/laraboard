@@ -23,7 +23,7 @@
         @csrf
         <input type='text' name='name' placeholder='Name' required>
         <select name="content" required>
-        <option selected disabled>Content</option>
+        <option selected disabled>Content Rating</option>
         <option value='sfw'>SFW (Safe For Work)</option>
         <option value='nsfw'>NSFW (Not Safe For Work)</option>
         </select>
@@ -40,7 +40,7 @@
         </select>
         <input type='text' placeholder='New Name' name='name' required>
         <select name="content">
-        <option selected disabled>New Content (optional)</option>
+        <option selected disabled>New Content Rating (optional)</option>
         <option value='sfw'>SFW (Safe For Work)</option>
         <option value='nsfw'>NSFW (Not Safe For Work)</option>
         </select>

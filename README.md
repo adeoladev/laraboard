@@ -23,8 +23,7 @@ Imageboard engine written in Laravel and Vue.<br /><br />
     - Search threads
 
 ## Cons
-- No captcha system
-- No green-text or spoiler text
+- No green-text or spoiler-text
 
 ## Installation
 ```sh

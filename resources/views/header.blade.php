@@ -10,6 +10,11 @@
 </head>
 
 <div id='app'>
+
+<div id='statusContainer'>
+    @include('inc.status')
+</div>
+
 <header-component 
 board="{{$name ?? null}}" 
 tag="{{$tag ?? null}}" 
@@ -17,13 +22,12 @@ current_page={{ $page ?? 'x' }}
 thread_path={{ route('newreply', $thread.','.$tag) }} 
 board_path={{ route('newthread', $tag ?? 'x') }} 
 csrf="{{csrf_token()}}" 
-status="{{ session('status') }}"
 app_name="{{config('app.name')}}"
 main_board_path="{{route('board',$tag ?? 'x')}}"
-archived="{{$archived ?? null}}">
+archived="{{$archived ?? null}}"
+captcha_url="{{ route('captcha') }}">
 </header-component>
 </div>
-
 
 @yield('content')
 

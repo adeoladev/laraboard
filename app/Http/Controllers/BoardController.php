@@ -17,6 +17,7 @@ public $thread;
         $nsfwBoards = Board::whereHas('category',function($q) {
             $q->where('content','nsfw');
         })->get('tag');
+
         $boards = Board::all();
         $popularThreads = Threads::query();
         $categories = Category::query();
@@ -37,7 +38,7 @@ public $thread;
 
         $popularThreads = $popularThreads->orderBy('replies','DESC')->get()->take(6);
 
-        return view('index', compact('categories','popularThreads','boards'));
+        return view('index', compact('categories','popularThreads','boards'))->with('nsfw',$nsfwBoards);
     }
 
     public function board($board) {
@@ -74,7 +75,7 @@ public $thread;
         ]);
 
         if (!isset($request->upload) && !isset($request->linkupload)) {
-            return redirect()->back()->with('status','Please attach a file to your thread.');
+            return redirect()->back()->with('status','Please attach a file to your thread');
         }
 
         $ip = $_SERVER['REMOTE_ADDR'];
@@ -134,7 +135,7 @@ public $thread;
             'board' => $tag
         ]); 
 
-        return redirect()->back()->with('status','Thread posted.');
+        return redirect()->back()->with('status','Thread posted');
         
     }
 

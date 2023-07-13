@@ -12,6 +12,7 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.0",
+        "mews/captcha": "^3.3",
         "pbmedia/laravel-ffmpeg": "^8.1",
         "webpatser/laravel-uuid": "^4.0"
     },

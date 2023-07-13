@@ -33,7 +33,8 @@ class ThreadController extends Controller
         $request->validate([
             'name' => 'max:48',
             'message' => 'required',
-            'upload' => 'mimes:jpg,jpeg,png,gif,mp4,webm'
+            'upload' => 'mimes:jpg,jpeg,png,gif,mp4,webm',
+            'captcha' => 'required|captcha'
         ]);
     
         $vars = explode(',',$id);
@@ -117,7 +118,11 @@ class ThreadController extends Controller
             'board' => $board
         ]); 
     
-        return redirect()->back()->with('status','Reply posted.');
+        return redirect()->back()->with('status','Reply posted');
+    }
+
+    public function getCaptcha() {
+        return response()->json(['captcha'=> captcha_img('flat')]);
     }
 
 }

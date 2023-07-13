@@ -18,7 +18,11 @@
     <input type='text' name='title' style='width:100%' v-bind:class="{ hidden: hiddenTitle }" placeholder='title (optional)' maxlength="48">
     </div>
     <textarea id='textbox' type='text' name='message' required></textarea>
-    <br>
+    <div style='display:flex'>
+    <input style='width:100%' type='text' placeholder='captcha code' name='captcha' required>
+    <button style='width:100%' type='button' v-on:click="showCaptcha">GET CAPTCHA</button>
+    </div>
+    <div id='captcha'></div>
     <div style="display:flex;">
     <span style="width: 220px;">
     <input type='text' v-bind:class="{ hidden: hiddenLinkUpload }" name='linkupload' placeholder='Enter a URL' style='width: 100%;'>
@@ -32,15 +36,12 @@
     <button type='submit' :disabled='isDisabled'>SUBMIT</button>
     </form>
     </div>
-    <div id='status' v-bind:class="{ hidden: hiddenStatus }">
-    <p>{{status}}</p>
-    </div>
 </div>
 </template>
 
 <script>
     export default {
-        props: ['board','tag','current_page','board_path','thread_path','csrf','status','app_name','main_board_path','archived'],
+        props: ['board','tag','current_page','board_path','thread_path','csrf','app_name','main_board_path','archived','captcha_url'],
         data() {
         return {
         hiddenForm: true,
@@ -51,7 +52,6 @@
         buttonType: 'NEW THREAD',
         form_action: '',
         hiddenButton: false,
-        hiddenStatus: true,
         searchBar: true,
         isDisabled: false
         }
@@ -71,6 +71,16 @@
         } else {
         this.uploadType = 'Link';    
         }
+        },
+        showCaptcha:function(){
+          this.axios.get(this.captcha_url, {
+                })
+                .then(function (response) {
+                  document.getElementById('captcha').innerHTML = response.data.captcha; 
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
         }
         },
         created: function(){
@@ -84,10 +94,6 @@
         this.buttonType = 'NEW REPLY';
         } else {
         this.hiddenButton = true;
-        }
-        if(this.status) {
-        this.hiddenStatus = false;
-        setTimeout(function(){ document.getElementById('status').style.display = 'none'; }, 3000);
         }
         if(this.archived == true) {
         this.isDisabled = true;

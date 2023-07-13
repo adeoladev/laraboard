@@ -12,7 +12,7 @@
         <ul id='filterMenu' class='hidden'>
         <a href="{{route('cookie','All Boards')}}"><li>Show All Boards @if(Cookie::get('board_filter') == 'All Boards') ✔ @endif</li></a>
         <a href="{{route('cookie','SFW Boards')}}"><li>Show Worksafe Boards Only @if(Cookie::get('board_filter') == 'SFW Boards') ✔ @endif</li></a>
-        <a href="{{route('cookie','NSFW Boards')}}"><li>Show NSFW Boards Only @if(Cookie::get('board_filter') == 'NSFW Boards') ✔ @endif</li></a>
+        @if($nsfw->isNotEmpty())<a href="{{route('cookie','NSFW Boards')}}"><li>Show NSFW Boards Only @if(Cookie::get('board_filter') == 'NSFW Boards') ✔ @endif</li></a>@endif
         </ul>
         <div class='flexwrap'>   
         @foreach($categories as $category)
